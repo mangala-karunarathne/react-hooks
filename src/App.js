@@ -14,8 +14,8 @@ const App = () => {
     fetch(url)
       .then((result) => result.json())
       // .then((data)=>console.log(data))
-      .then((data) => setNews(data?.hits), setLoading(false))
-      .catch((err) => console.log(err));
+      .then((data) => {setNews(data?.hits); setLoading(false)})
+      .catch((err) => {console.log(err); setLoading(false)});
   };
   useEffect(() => {
     fetchNews();
