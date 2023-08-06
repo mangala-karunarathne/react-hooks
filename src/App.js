@@ -4,13 +4,17 @@ import React from "react";
 
 const App = () => {
   const [news, setNews] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('react');
-  const [url, setUrl] = useState('http://hn.algolia.com/api/v1/search?query=react');
+  const [searchQuery, setSearchQuery] = useState("react");
+  const [url, setUrl] = useState(
+    "http://hn.algolia.com/api/v1/search?query=react"
+  );
+  const [loading, setLoading] = useState(false);
   const fetchNews = () => {
+    setLoading(true);
     fetch(url)
       .then((result) => result.json())
       // .then((data)=>console.log(data))
-      .then((data) => setNews(data?.hits))
+      .then((data) => setNews(data?.hits), setLoading(false))
       .catch((err) => console.log(err));
   };
   useEffect(() => {
@@ -18,24 +22,26 @@ const App = () => {
   }, [url]);
 
   const handleChange = (e) => {
-    setSearchQuery(e.target.value)
-    console.log('searchQuery :', searchQuery); // This will log already updated value but not with latest update ( to get update with latest value have to use useEffect as below)
-  }
-  
-  useEffect(() => { // To check the log when update as it's 
-    console.log('searchQuery ( Use effect) :', searchQuery);
+    setSearchQuery(e.target.value);
+    console.log("searchQuery :", searchQuery); // This will log already updated value but not with latest update ( to get update with latest value have to use useEffect as below)
+  };
+
+  useEffect(() => {
+    // To check the log when update as it's
+    console.log("searchQuery ( Use effect) :", searchQuery);
   }, [searchQuery]);
 
-const handleSubmit = (e) => {
-  e.preventDefault()
-  setUrl(`http://hn.algolia.com/api/v1/search?query=${searchQuery}`)
-}
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setUrl(`http://hn.algolia.com/api/v1/search?query=${searchQuery}`);
+  };
 
   return (
     <div>
       <h2>News</h2>
+      {loading ? <h2>Loading...</h2> : ""}
       <form onSubmit={handleSubmit}>
-        <input type="text" value={searchQuery} onChange={handleChange}/>
+        <input type="text" value={searchQuery} onChange={handleChange} />
         <button>Search</button>
       </form>
       {news.map((n, i) => {
